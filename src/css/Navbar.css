@@ -1,0 +1,21 @@
+/* Navbar container styles */
+.navbar {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #121212; /* Darker shade of gray/black */
+    position: relative;
+    z-index: 10; /* Ensures the navbar is layered above the background */
+    border-bottom: 2px solid #1e1e1e; /* Subtle bottom border for added contrast */
+  }
+  
+  /* Title styles */
+  .navbar-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Adds a subtle shadow for readability */
+    margin: 0;
+    font-family: 'Poppins', sans-serif; 
+    letter-spacing: 1px; 
+  }
+  

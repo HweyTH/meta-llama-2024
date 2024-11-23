@@ -1,0 +1,60 @@
+.upload-container {
+    display: flex;
+    flex-direction: column; /* Stacks the subheading and button vertically */
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 200px); /* Centered vertically */
+    position: relative;
+    z-index: 10; /* Ensure the button and subheading are above the background */
+  }
+  
+  .subheading {
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 20px; /* Adds space between the subheading and the upload button */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); /* Adds a subtle shadow for readability */
+  }
+  
+  .upload-input-wrapper {
+    position: relative;
+  }
+  
+  .upload-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+  }
+  
+  .upload-icon {
+    width: 150px;
+    height: 50px;
+    background-color: #ffffff;
+    border-radius: 25px; /* Rounded corners */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #1e90ff; /* Button text color */
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10; /* Ensure the button is layered above the background */
+  }
+  
+  .upload-icon:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.1);
+  }
+  
+  .upload-icon:active {
+    transform: scale(1);
+  }
+  
+  .upload-icon:focus {
+    outline: none;
+  }
+  

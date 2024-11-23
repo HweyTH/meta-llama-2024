@@ -1,0 +1,40 @@
+.course-summary-container {
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'Roboto', sans-serif;
+    color: #1e90ff;
+    position: relative;
+    z-index: 10; /* Layer course summary above background */
+  }
+  
+  .course-summary-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .course-summary-content {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+  }
+  
+  .generate-audio-button {
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #ffffff;
+    color: #1e90ff;
+    border: 2px solid #1e90ff;
+    border-radius: 25px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    z-index: 10; /* Ensure the button is above the background */
+  }
+  
+  .generate-audio-button:hover {
+    background-color: #1e90ff;
+    color: #ffffff;
+    transform: scale(1.05);
+  }
+  
