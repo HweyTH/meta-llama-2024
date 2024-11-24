@@ -14,7 +14,7 @@ import subprocess
 load_dotenv()
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "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"
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["UPLOAD_FOLDER"] = "uploads"
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
 ALLOWED_EXTENSIONS = {"pdf"}
