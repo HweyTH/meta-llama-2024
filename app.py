@@ -7,12 +7,14 @@ from datetime import datetime
 import requests
 from typing import List
 from dotenv import load_dotenv  # Added for better env variable handling
+from flask import send_from_directory
+import subprocess
 
 # Load environment variables from .env file if it exists
 load_dotenv()
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "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"
+app.config["SECRET_KEY"] = "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"
 app.config["UPLOAD_FOLDER"] = "uploads"
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
 ALLOWED_EXTENSIONS = {"pdf"}
@@ -98,7 +100,7 @@ def verify_api_key():
 
     test_payload = {
         "messages": [{"role": "user", "content": "test"}],
-        "model": "llama3.1-405b",
+        "model": "llama3-70b-8192",
         "max_tokens": 1,
     }
 
@@ -140,7 +142,7 @@ Provide the summary in a clear, professional style."""
                 },
                 {"role": "user", "content": prompt},
             ],
-            "model": "llama3.1-405b",
+            "model": "llama3-70b-8192",
             "temperature": 0.3,
             "max_tokens": 1000,
         }
@@ -171,7 +173,7 @@ Create a coherent, flowing summary that captures the main points from all segmen
                     },
                     {"role": "user", "content": final_summary_prompt},
                 ],
-                "model": "llama3.1-405b",
+                "model": "llama3-70b-8192",
                 "temperature": 0.3,
                 "max_tokens": 1000,
             }
@@ -184,6 +186,43 @@ Create a coherent, flowing summary that captures the main points from all segmen
 
     return summaries[0]
 
+def extract_topic(text: str) -> str:
+    """Extracts the topic of the text. Defaults to the first sentence."""
+    try:
+        # Assuming the topic is the first line or sentence
+        lines = text.splitlines()
+        topic = lines[0] if lines else "Unknown Topic"
+        return topic.strip()
+    except Exception as e:
+        print(f"Error extracting topic: {str(e)}")
+        return "Unknown Topic"
+    
+def generate_podcast_for_uploaded_document(filename):
+    """Trigger the podcast generation after document is processed."""
+    conn = sqlite3.connect("pdf_summaries.db")
+    c = conn.cursor()
+    c.execute("SELECT id, summary FROM documents WHERE filename = ?", (filename,))
+    document = c.fetchone()
+    conn.close()
+
+    if document:
+        summary = document[1]
+
+        try:
+            # Run the external script to generate the podcast with the document summary
+            result = subprocess.run(
+                ["python3", "backend/generatePodcast_v2.0.py", summary],
+                text=True,
+                capture_output=True,
+                check=True
+            )
+            print("Podcast generation successful:", result.stdout)  # Optionally log output
+        except subprocess.CalledProcessError as e:
+            print(f"Error generating podcast: {e.stderr}")
+            raise Exception(f"Podcast generation failed: {str(e)}")
+
+    else:
+        raise ValueError("Document not found for podcast generation.")
 
 @app.route("/")
 def index():
@@ -238,13 +277,14 @@ def upload_file():
                 os.remove(file_path)
                 return redirect(url_for("index"))
 
+            # Insert data into the database, including the topic
             conn = sqlite3.connect("pdf_summaries.db")
             c = conn.cursor()
             c.execute(
                 """
                 INSERT INTO documents (filename, original_text, summary)
                 VALUES (?, ?, ?)
-            """,
+                """,
                 (filename, text, summary),
             )
             conn.commit()
@@ -253,6 +293,14 @@ def upload_file():
             os.remove(file_path)
 
             flash("File successfully processed and summarized")
+
+            # Call the function to generate podcast after the upload and processing
+            try:
+                # Now call the generate_podcast function or the subprocess
+                generate_podcast_for_uploaded_document(filename)
+            except Exception as e:
+                flash(f"Error generating podcast: {str(e)}")
+
         except Exception as e:
             flash(f"Error processing file: {str(e)}")
     else:
@@ -274,6 +322,10 @@ def view_document(id):
         return redirect(url_for("index"))
     return render_template("document.html", document=document)
 
+
+@app.route('/audio/final_podcast')
+def serve_audio():
+    return send_from_directory('backend/audio', 'final_podcast.mp3')
 
 if __name__ == "__main__":
     init_db()

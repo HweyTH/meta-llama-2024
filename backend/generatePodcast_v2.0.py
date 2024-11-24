@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import re
+import sys
 from pydub import AudioSegment
 from dotenv import load_dotenv
 
@@ -17,7 +18,8 @@ ELEVENLABS_API_URL = "https://api.elevenlabs.io/v1/text-to-speech"
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 
 # Parameters for podcast script
-topic = "Einstein's Laws of Gravity"  # Replace with your topic
+summary = sys.argv[1]
+print(summary)
 length = 10  # Duration in minutes
 tone = "informal"  # Adjust as needed
 style = "conversational"  # Adjust as needed
@@ -32,7 +34,7 @@ speaker_profiles = [
 prompt = f"""
 Generate a detailed podcast script for a dialogue between two speakers. The script will later be used for voice cloning and converted into a podcast audio file. Ensure the script meets the following criteria:
 
-1. Topic: The podcast should be about "{topic}" and must provide an informative yet engaging discussion of the topic.
+1. Topic: The podcast should be about the following summary: {summary}.
 2. Length: The script should be approximately {length} minutes long.
 3. Speakers: The dialogue should alternate between two speakers:
    - Speaker 1: Has a "{speaker_profiles[0]['personality']}" personality".

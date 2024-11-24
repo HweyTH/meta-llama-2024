@@ -21,11 +21,16 @@
                         {{ document[3] }}
                     </div>
                 </div>
-                
+
+                <!-- Audio Player Section -->
                 <div>
-                    <h2 class="text-xl font-semibold mb-4">Original Text</h2>
-                    <div class="bg-gray-50 p-4 rounded max-h-96 overflow-y-auto">
-                        {{ document[2] }}
+                    <h2 class="text-xl font-semibold mb-4">Audio</h2>
+                    <div class="bg-gray-50 p-4 rounded">
+                        <!-- Add audio player here if an audio file is available -->
+                        <audio controls class="w-full">
+                            <source src="{{ url_for('serve_audio') }}" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>                        
                     </div>
                 </div>
             </div>
