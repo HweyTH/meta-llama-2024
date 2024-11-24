@@ -116,6 +116,16 @@ payload = {
     "temperature": 0.7  # Adjust creativity level if needed
 }
 
+# Function to delete the segmented audio files (after compiling)
+def delete_segmented_files(files):
+    """Deletes the segmented audio files."""
+    for file in files:
+        try:
+            os.remove(file)
+            print(f"Deleted {file}")
+        except OSError as e:
+            print(f"Error deleting {file}: {e}")
+
 # Post API request and poll to check for success
 try:
     response = requests.post(
@@ -146,15 +156,20 @@ try:
                 output_file = f"backend/audio/audio_line_{i + 1}.mp3"
                 generate_audio(text, voice_id, output_file)
                 audio_segments.append(output_file)
+                audio_file_list = audio_segments
 
             if audio_segments:
                 audio_segments = [AudioSegment.from_file(file) for file in audio_segments]
                 podcast = sum(audio_segments)
-                podcast.export("final_podcast.mp3", format="mp3")
+                podcast.export("backend/audio/final_podcast.mp3", format="mp3")
                 print("Final podcast saved as 'final_podcast.mp3'.")
+
+                # delete the segmented audio files
+                delete_segmented_files(audio_file_list)
             else:
-                print("No audio files were generated; skipping podcast creation.") 
-         
+                print("No audio files were generated; skipping podcast creation.")
+            
+            # Delete the segmented audio files after creating the final podcast
         except json.JSONDecodeError:
             print("Error: Unable to parse the podcast script JSON.")
     else:
