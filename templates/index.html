@@ -8,7 +8,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen p-8">
     <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold mb-8">PDF Processor and Summarizer</h1>
+        <h1 class="text-3xl font-bold mb-8">Flashnote</h1>
         
         <!-- API Status Indicator -->
         {% if api_status %}
@@ -32,19 +32,19 @@
         {% endwith %}
         
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-xl font-semibold mb-4">Upload New PDF</h2>
+            <h2 class="text-xl font-semibold mb-4">Welcome to Flashnote! Upload your course note to continue</h2>
             <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
                 <div class="flex items-center space-x-4">
                     <input type="file" name="file" accept=".pdf" class="flex-1 p-2 border rounded">
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" {% if not api_status %}disabled{% endif %}>
-                        Upload and Process
+                        Upload
                     </button>
                 </div>
             </form>
         </div>
         
         <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-semibold mb-4">Processed Documents</h2>
+            <h2 class="text-xl font-semibold mb-4">Notes</h2>
             {% if documents %}
                 <div class="space-y-4">
                     {% for doc in documents %}

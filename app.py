@@ -34,6 +34,10 @@ def allowed_file(filename):
 
 
 def init_db():
+     # Delete the existing database file to reset the documents
+    if os.path.exists("pdf_summaries.db"):
+        os.remove("pdf_summaries.db")
+
     conn = sqlite3.connect("pdf_summaries.db")
     c = conn.cursor()
     c.execute(
@@ -94,7 +98,7 @@ def verify_api_key():
 
     test_payload = {
         "messages": [{"role": "user", "content": "test"}],
-        "model": "mixtral-8x7b-32768",
+        "model": "llama3.1-405b",
         "max_tokens": 1,
     }
 
@@ -136,7 +140,7 @@ Provide the summary in a clear, professional style."""
                 },
                 {"role": "user", "content": prompt},
             ],
-            "model": "mixtral-8x7b-32768",
+            "model": "llama3.1-405b",
             "temperature": 0.3,
             "max_tokens": 1000,
         }
@@ -167,7 +171,7 @@ Create a coherent, flowing summary that captures the main points from all segmen
                     },
                     {"role": "user", "content": final_summary_prompt},
                 ],
-                "model": "mixtral-8x7b-32768",
+                "model": "llama3.1-405b",
                 "temperature": 0.3,
                 "max_tokens": 1000,
             }
@@ -268,7 +272,6 @@ def view_document(id):
     if document is None:
         flash("Document not found")
         return redirect(url_for("index"))
-
     return render_template("document.html", document=document)
 
 
