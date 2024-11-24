@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Processor</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">PDF Processor and Summarizer</h1>
+        
+        <!-- API Status Indicator -->
+        {% if api_status %}
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
+                API Status: Connected
+            </div>
+        {% else %}
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+                API Status: Not Connected - {{ api_message }}
+            </div>
+        {% endif %}
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-4">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Upload New PDF</h2>
+            <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                <div class="flex items-center space-x-4">
+                    <input type="file" name="file" accept=".pdf" class="flex-1 p-2 border rounded">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" {% if not api_status %}disabled{% endif %}>
+                        Upload and Process
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Processed Documents</h2>
+            {% if documents %}
+                <div class="space-y-4">
+                    {% for doc in documents %}
+                        <div class="border rounded p-4 hover:bg-gray-50">
+                            <a href="{{ url_for('view_document', id=doc[0]) }}" class="block">
+                                <h3 class="font-semibold text-lg">{{ doc[1] }}</h3>
+                                <p class="text-gray-600 text-sm">Uploaded: {{ doc[3] }}</p>
+                                <p class="mt-2 text-gray-700">{{ doc[2][:200] }}...</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-600">No documents processed yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
